@@ -1,0 +1,60 @@
+// Prisma ORM Schema — Smart Road Safety System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SpeedCheck {
+  id               String   @id @default(cuid())
+  vehicleId        String
+  zoneType         String
+  speedLimit       Float
+  actualSpeed      Float
+  weatherCondition String
+  violation        Boolean
+  violationProb    Float
+  riskLevel        String
+  alerts           String[] // JSON array of alert strings
+  latitude         Float?
+  longitude        Float?
+  createdAt        DateTime @default(now())
+
+  @@index([vehicleId])
+  @@index([createdAt])
+  @@index([violation])
+  @@map("speed_checks")
+}
+
+model Alert {
+  id          String   @id @default(cuid())
+  type        String   // "SPEED" | "WEATHER" | "ZONE"
+  severity    String   // "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
+  message     String
+  vehicleId   String?
+  latitude    Float?
+  longitude   Float?
+  acknowledged Boolean @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([vehicleId])
+  @@index([createdAt])
+  @@index([acknowledged])
+  @@map("alerts")
+}
+
+model WeatherCache {
+  id          String   @id @default(cuid())
+  lat         Float
+  lon         Float
+  data        Json
+  fetchedAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  @@index([lat, lon])
+  @@map("weather_cache")
+}

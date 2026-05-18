@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+data/speed_violations.csv
+model/speed_classifier.pkl
+model/model_metadata.json
+*.log
